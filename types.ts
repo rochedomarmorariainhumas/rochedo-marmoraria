@@ -1,19 +1,21 @@
 
-export enum TransactionType {
-  INCOME = 'RECEITA',
-  EXPENSE = 'DESPESA'
-}
+// Types for Rochedo Marmoraria
 
 export enum BudgetStatus {
-  PENDING = 'PENDENTE',
-  APPROVED = 'APROVADO',
-  REJECTED = 'REJEITADO'
+  PENDING = 'pendente',
+  APPROVED = 'aprovado',
+  REJECTED = 'rejeitado'
 }
 
 export enum OrderStatus {
-  IN_PRODUCTION = 'EM PRODUÇÃO',
-  WAITING_INSTALLATION = 'AGUARDANDO INSTALAÇÃO',
-  COMPLETED = 'CONCLUÍDO'
+  PRODUCTION = 'produção',
+  INSTALLATION = 'instalação',
+  COMPLETED = 'concluído'
+}
+
+export enum TransactionType {
+  INCOME = 'receita',
+  EXPENSE = 'despesa'
 }
 
 export interface Cliente {
@@ -23,46 +25,43 @@ export interface Cliente {
   email: string;
   telefone: string;
   endereco: string;
-  createdAt: number;
+  observacoes?: string;
 }
 
 export interface Orcamento {
   id: string;
+  numeroDoc: string;
   clienteId: string;
   clienteNome: string;
   descricao: string;
-  valorTotal: number;
+  material: string;
+  metragem: number;
+  valor: number;
   status: BudgetStatus;
-  validade: string;
-  createdAt: number;
+  dataCriacao?: any;
 }
 
 export interface Pedido {
   id: string;
+  numeroDoc: string;
   orcamentoId: string;
   clienteId: string;
   clienteNome: string;
   descricao: string;
-  valorTotal: number;
-  dataEntrega: string;
+  valorFinal: number;
   status: OrderStatus;
-  createdAt: number;
+  pago: boolean;
+  dataEntrega: any;
+  dataAprovacao?: any;
 }
 
 export interface Financeiro {
   id: string;
   descricao: string;
   valor: number;
-  data: string;
+  data: any;
   tipo: TransactionType;
-  pago: boolean;
   categoria: string;
-  createdAt: number;
-}
-
-export interface DashboardStats {
-  faturamentoMes: number;
-  orcamentosPendentes: number;
-  pedidosEmAndamento: number;
-  contasPagarHoje: number;
+  pago: boolean;
+  referenciaId?: string | null;
 }

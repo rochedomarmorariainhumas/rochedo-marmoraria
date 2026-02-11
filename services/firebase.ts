@@ -1,6 +1,8 @@
 
+// Fix: Re-importing modular Firebase functions to resolve 'no exported member' errors
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSy-ROCHEDO-MARMORARIA-DEMO-KEY",
@@ -11,8 +13,8 @@ const firebaseConfig = {
   appId: "1:123456789:web:abcdef"
 };
 
-// Inicializa o app apenas se ainda não houver um
+// Fix: Correctly initialize Firebase app checking for existing instances to avoid 'duplicate app' errors
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// O getAuth deve ser chamado após a inicialização do app
 export const auth = getAuth(app);
+export const db = getFirestore(app);
