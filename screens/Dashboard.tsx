@@ -18,8 +18,8 @@ import {
   ResponsiveContainer, 
   Cell 
 } from 'recharts';
-import { storage } from '../services/storage';
-import { BudgetStatus, OrderStatus, TransactionType } from '../types';
+import { storage } from '../services/storage.ts';
+import { BudgetStatus, OrderStatus, TransactionType } from '../types.ts';
 
 const Dashboard: React.FC = () => {
   const financeiro = storage.financeiro.getAll();

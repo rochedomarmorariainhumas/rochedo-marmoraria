@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from './components/Layout';
-import Dashboard from './screens/Dashboard';
-import Clientes from './screens/Clientes';
-import Orcamentos from './screens/Orcamentos';
-import Pedidos from './screens/Pedidos';
-import Financeiro from './screens/Financeiro';
+import Layout from './components/Layout.tsx';
+import Dashboard from './screens/Dashboard.tsx';
+import Clientes from './screens/Clientes.tsx';
+import Orcamentos from './screens/Orcamentos.tsx';
+import Pedidos from './screens/Pedidos.tsx';
+import Financeiro from './screens/Financeiro.tsx';
 import { Gem, Lock, Mail, Loader2 } from 'lucide-react';
+import { login, logout, subscribeToAuthChanges, getAuthErrorMessage } from './services/auth.ts';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -19,35 +20,44 @@ const App: React.FC = () => {
   const [authError, setAuthError] = useState('');
 
   useEffect(() => {
-    // Simulate initial loading / check session
-    const checkSession = setTimeout(() => {
-      const loggedIn = localStorage.getItem('rochedo_logged_in') === 'true';
-      setIsAuthenticated(loggedIn);
+    // Subscreve às mudanças de estado de autenticação
+    const unsubscribe = subscribeToAuthChanges((user) => {
+      console.log("Auth State Changed:", user ? "Logged In" : "Logged Out");
+      setIsAuthenticated(!!user);
       setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(checkSession);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
     setIsLoading(true);
 
-    // Initial administrator login mock (admin@rochedo.com / admin123)
-    setTimeout(() => {
-      if (email === 'admin@rochedo.com' && password === 'admin123') {
+    try {
+      const user = await login(email, password);
+      if (user) {
         setIsAuthenticated(true);
-        localStorage.setItem('rochedo_logged_in', 'true');
-      } else {
-        setAuthError('E-mail ou senha incorretos.');
+        setIsLoading(false);
       }
+    } catch (error: any) {
+      console.error("Erro de login detalhado:", error);
+      setAuthError(getAuthErrorMessage(error.code || 'default'));
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('rochedo_logged_in');
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await logout();
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading && !isAuthenticated) {
@@ -138,9 +148,14 @@ const App: React.FC = () => {
                 {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Entrar no Sistema'}
               </button>
 
-              <p className="text-center text-zinc-600 text-sm">
-                Esqueceu sua senha? Entre em contato com o suporte.
-              </p>
+              <div className="text-center space-y-2">
+                <p className="text-zinc-600 text-sm">
+                  Dica: Para o primeiro acesso use o admin padrão.
+                </p>
+                <p className="text-zinc-400 text-[10px] font-mono">
+                  rochedomarmorariainhumas@gmail.com
+                </p>
+              </div>
             </form>
           </div>
         </div>
