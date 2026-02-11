@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Rochedo Marmoraria",
+  "description": "Sistema de gestão completo para marmorarias, incluindo controle de clientes, orçamentos, pedidos e financeiro com interface moderna e intuitiva.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
